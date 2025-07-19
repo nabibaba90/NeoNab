@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>NeoNab Panel</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #000;
+      color: #0ff;
+      overflow-x: hidden;
+    }
+    .header {
+      background-color: #111;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 0 15px #00ffff;
+    }
+    .logo {
+      font-size: 28px;
+      font-weight: 700;
+      color: #0ff;
+      user-select: none;
+    }
+    .menu-toggle {
+      font-size: 28px;
+      color: #0ff;
+      background: none;
+      border: none;
+      cursor: pointer;
+      user-select: none;
+    }
+    .menu {
+      position: fixed;
+      top: 65px;
+      right: 15px;
+      background: #111;
+      border-radius: 15px;
+      width: 320px;
+      max-height: 75vh;
+      overflow-y: auto;
+      padding: 20px;
+      box-shadow: 0 0 40px #00ffff;
+      display: none;
+      z-index: 9999;
+    }
+    .category {
+      font-size: 22px;
+      font-weight: 700;
+      margin-top: 15px;
+      cursor: pointer;
+      color: #0ff;
+      user-select: none;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #0ff;
+      padding-bottom: 5px;
+    }
+    .submenu {
+      margin-top: 10px;
+      display: none;
+      flex-direction: column;
+    }
+    .submenu a {
+      text-decoration: none;
+      color: #0ff;
+      background: #000;
+      padding: 10px 15px;
+      margin: 6px 0;
+      border-radius: 10px;
+      box-shadow: 0 0 8px #0ff;
+      font-weight: 600;
+      transition: background 0.3s, color 0.3s;
+      user-select: none;
+    }
+    .submenu a:hover {
+      background: #0ff;
+      color: #000;
+    }
+    .label-free {
+      background: #0a0;
+      color: #0ff;
+      font-weight: 700;
+      font-size: 12px;
+      border-radius: 5px;
+      padding: 2px 6px;
+      margin-left: 10px;
+      user-select: none;
+    }
+    .label-vip {
+      background: #f00;
+      color: #fff;
+      font-weight: 700;
+      font-size: 12px;
+      border-radius: 5px;
+      padding: 2px 6px;
+      margin-left: 10px;
+      user-select: none;
+    }
+    /* Aç/kapa ikonu için */
+    .toggle-icon {
+      font-size: 20px;
+      user-select: none;
+      transition: transform 0.3s ease;
+    }
+    .rotated {
+      transform: rotate(90deg);
+    }
+
+    /* Scroll bar stil */
+    .menu::-webkit-scrollbar {
+      width: 8px;
+    }
+    .menu::-webkit-scrollbar-thumb {
+      background: #0ff;
+      border-radius: 10px;
+    }
+    .menu::-webkit-scrollbar-track {
+      background: #111;
+    }
+
+    /* Responsive */
+    @media (max-width: 400px) {
+      .menu {
+        width: 90vw;
+        right: 5px;
+        top: 60px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <div class="logo">NeoNab</div>
+    <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+  </header>
+
+  <nav class="menu" id="menu">
+    <div class="category" onclick="toggleSubmenu('neo')">
+      NeoNab2025🐺
+      <span class="toggle-icon" id="neo-icon">▶</span>
+    </div>
+    <div class="submenu" id="neo">
+      <a href="/sorgu/adsoyad">Ad Soyad<span class="label-free">Free</span></a>
+      <a href="/sorgu/adsoyadil">Adsoyad İl<span class="label-free">Free</span></a>
+      <a href="/sorgu/adsoyadil">Adsoyad İl İlçe<span class="label-free">Free</span></a>
+      <a href="/sorgu/telegram">Telegram Sorgu<span class="label-free">Free</span></a>
+    </div>
+
+    <div class="category" onclick="toggleSubmenu('diger')">
+      Diğer İşlemler 🍌🍌
+      <span class="toggle-icon" id="diger-icon">▶</span>
+    </div>
+    <div class="submenu" id="diger">
+      <a href="/sorgu/tc">TC Pro<span class="label-vip">VIP</span></a>
+      <a href="/sorgu/tcgsm">TC GSM<span class="label-vip">VIP</span></a>
+      <a href="/sorgu/tapu">Tapu<span class="label-vip">VIP</span></a>
+      <a href="/sorgu/sulale">Sülale<span class="label-vip">VIP</span></a>
+    </div>
+
+    <div class="category" onclick="toggleSubmenu('saglam')">
+      Sağlam İşlemler 🌐
+      <span class="toggle-icon" id="saglam-icon">▶</span>
+    </div>
+    <div class="submenu" id="saglam">
+      <a href="/sorgu/isyeriyetkili">SGK Yetkili<span class="label-vip">VIP</span></a>
+      <a href="/sorgu/isyeri">İş Yeri<span class="label-vip">VIP</span></a>
+      <a href="/sorgu/hane">Hane API<span class="label-vip">VIP</span></a>
+      <a href="/sorgu/gsmdetay">GSM Detay<span class="label-vip">VIP</span></a>
+    </div>
+  </nav>
+
+  <script>
+    function toggleMenu() {
+      const menu = document.getElementById('menu');
+      menu.style.display = (menu.style.display === 'flex') ? 'none' : 'flex';
+      menu.style.flexDirection = 'column';
+    }
+
+    function toggleSubmenu(id) {
+      const submenu = document.getElementById(id);
+      const icon = document.getElementById(id + '-icon');
+      if (submenu.style.display === 'flex' || submenu.style.display === 'block') {
+        submenu.style.display = 'none';
+        icon.classList.remove('rotated');
+      } else {
+        submenu.style.display = 'flex';
+        submenu.style.flexDirection = 'column';
+        icon.classList.add('rotated');
+      }
+    }
+  </script>
+
+</body>
+</html>
