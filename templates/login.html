@@ -1,82 +1,118 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <title>NeoNabi Giriş</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap">
-    <style>
-        body {
-            margin: 0;
-            font-family: 'Orbitron', sans-serif;
-            background: linear-gradient(270deg, #ff0000, #0000ff);
-            background-size: 400% 400%;
-            animation: neonBg 6s ease infinite;
-            color: #fff;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>NeoNabi Giriş</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
 
-        @keyframes neonBg {
-            0% {background-position: 0% 50%;}
-            50% {background-position: 100% 50%;}
-            100% {background-position: 0% 50%;}
-        }
+    body {
+      margin: 0;
+      font-family: 'Orbitron', sans-serif;
+      background: linear-gradient(-45deg, #ff0040, #00ffff, #0000ff, #ff00ff);
+      background-size: 600% 600%;
+      animation: neonBackground 15s ease infinite;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      color: #fff;
+    }
 
-        .container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-        }
+    @keyframes neonBackground {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
 
-        h1 {
-            font-size: 2.5rem;
-            text-shadow: 0 0 20px #0ff, 0 0 30px #f0f;
-        }
+    .login-container {
+      background-color: rgba(0, 0, 0, 0.7);
+      padding: 35px 25px;
+      border-radius: 20px;
+      box-shadow: 0 0 30px #00ffff, 0 0 60px #ff00ff;
+      width: 100%;
+      max-width: 360px;
+      text-align: center;
+    }
 
-        form {
-            background: rgba(0, 0, 0, 0.6);
-            padding: 25px;
-            border-radius: 20px;
-            box-shadow: 0 0 25px #0ff;
-            width: 300px;
-        }
+    h1 {
+      font-size: 2.2rem;
+      margin-bottom: 25px;
+      color: #00ffff;
+      text-shadow: 0 0 8px #00ffff, 0 0 18px #ff00ff;
+    }
 
-        input {
-            width: 100%;
-            padding: 10px;
-            margin-top: 15px;
-            border: none;
-            border-radius: 10px;
-        }
+    form input {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 15px;
+      border-radius: 12px;
+      border: none;
+      font-size: 16px;
+      background-color: #111;
+      color: #0ff;
+      box-shadow: 0 0 10px #0ff;
+      transition: box-shadow 0.3s ease;
+    }
 
-        button {
-            margin-top: 20px;
-            padding: 10px;
-            width: 100%;
-            border: none;
-            background: #00ffff;
-            color: #000;
-            font-weight: bold;
-            border-radius: 10px;
-            cursor: pointer;
-        }
+    form input:focus {
+      outline: none;
+      box-shadow: 0 0 20px #00ffff, 0 0 40px #ff00ff;
+    }
 
-        a {
-            color: #fff;
-            text-decoration: underline;
-            font-size: 0.9rem;
-        }
-    </style>
+    button {
+      background: linear-gradient(45deg, #00ffff, #ff00ff);
+      border: none;
+      color: #000;
+      font-weight: 700;
+      font-size: 16px;
+      border-radius: 12px;
+      padding: 12px;
+      width: 100%;
+      cursor: pointer;
+      box-shadow: 0 0 15px #00ffff;
+      transition: transform 0.2s ease, box-shadow 0.3s ease;
+    }
+
+    button:hover {
+      transform: scale(1.03);
+      box-shadow: 0 0 30px #00ffff, 0 0 60px #ff00ff;
+    }
+
+    p {
+      margin-top: 15px;
+      font-size: 0.9rem;
+    }
+
+    a {
+      color: #0ff;
+      text-decoration: underline;
+      font-weight: bold;
+    }
+
+    @media (max-width: 400px) {
+      h1 {
+        font-size: 1.8rem;
+      }
+      .login-container {
+        padding: 25px 20px;
+      }
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>NeoNabi Paneli - Giriş</h1>
-        <form method="POST" action="/login">
-            <input type="text" name="username" placeholder="Kullanıcı Adı" required>
-            <input type="password" name="password" placeholder="Şifre" required>
-            <button type="submit">Giriş Yap</button>
-        </form>
-        <p>Hesabın yok mu? <a href="/register">Kayıt Ol</a></p>
-    </div>
+  <div class="login-container">
+    <h1>NeoNabi Paneli</h1>
+    <form method="POST" action="/login">
+      <input type="text" name="username" placeholder="Kullanıcı Adı" required>
+      <input type="password" name="password" placeholder="Şifre" required>
+      <button type="submit">Giriş Yap</button>
+    </form>
+    <p>Hesabın yok mu? <a href="/register">Kayıt Ol</a></p>
+  </div>
 </body>
 </html>
