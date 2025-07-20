@@ -5,8 +5,11 @@ from functools import wraps
 app = Flask(__name__)
 app.secret_key = "neonabi_super_secret_key"  # Bunu gizli tut!
 
-# Basit kullanıcı veritabanı (demo amaçlı, gerçek projede DB kullan)
-USERS = {"admin": "123456"}
+# Kullanıcı yapısı: "username": ["password", "rol"]
+USERS = {
+    "admin": ["123456", "vip"],
+    "demo": ["demo123", "free"]
+}
 
 def login_required(f):
     @wraps(f)
@@ -20,14 +23,15 @@ def login_required(f):
 @app.route('/')
 @login_required
 def index():
-    return render_template("index.html")
+    rol = USERS[session["username"]][1]
+    return render_template("index.html", rol=rol)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == "POST":
         username = request.form.get("username")
         password = request.form.get("password")
-        if username in USERS and USERS[username] == password:
+        if username in USERS and USERS[username][0] == password:
             session["username"] = username
             flash("Giriş başarılı!", "success")
             return redirect(url_for("index"))
@@ -49,7 +53,7 @@ def register():
         elif username in USERS:
             flash("Bu kullanıcı zaten kayıtlı!", "error")
         else:
-            USERS[username] = password1
+            USERS[username] = [password1, "free"]
             flash("Kayıt başarılı! Giriş yapabilirsiniz.", "success")
             return redirect(url_for("login"))
     return render_template("register.html")
@@ -58,12 +62,24 @@ def register():
 @login_required
 def logout():
     session.pop("username", None)
-    flash("Başarıyla çıkış yapıldı.", "success")
+    flash("Çıkış yapıldı.", "success")
     return redirect(url_for("login"))
 
 @app.route('/sorgu/<sorgu_tipi>', methods=['GET', 'POST'])
 @login_required
 def sorgu(sorgu_tipi):
+    rol = USERS[session["username"]][1]
+    
+    # VIP gereken sorgular
+    vip_sorgular = [
+        "tapu", "tcgsm", "sulale", "isyeriyetkili", "okulno",
+        "hane", "gsmdetay", "isyeri", "aile", "adres"
+    ]
+
+    if sorgu_tipi in vip_sorgular and rol != "vip":
+        flash("Bu sorgu sadece VIP kullanıcılar içindir!", "error")
+        return redirect(url_for("index"))
+
     sonuc = None
     try:
         if request.method == 'POST':
@@ -71,77 +87,59 @@ def sorgu(sorgu_tipi):
                 ad = request.form.get("ad")
                 soyad = request.form.get("soyad")
                 url = f"https://api.hexnox.pro/sowixapi/adsoyadilice.php?ad={ad}&soyad={soyad}"
-
             elif sorgu_tipi == "adsoyadil":
                 ad = request.form.get("ad")
                 soyad = request.form.get("soyad")
                 il = request.form.get("il")
                 url = f"https://api.hexnox.pro/sowixapi/adsoyadilce.php?ad={ad}&soyad={soyad}&il={il}"
-
             elif sorgu_tipi == "telegram":
                 username = request.form.get("username")
                 url = f"https://api.hexnox.pro/sowixapi/telegram_sorgu.php?username={username}"
-
             elif sorgu_tipi == "tc":
                 tc = request.form.get("tc")
                 url = f"https://api.hexnox.pro/sowixapi/tcpro.php?tc={tc}"
-
             elif sorgu_tipi == "tcgsm":
                 tc = request.form.get("tc")
                 url = f"https://api.hexnox.pro/sowixapi/tcgsm.php?tc={tc}"
-
             elif sorgu_tipi == "tapu":
                 tc = request.form.get("tc")
                 url = f"https://api.hexnox.pro/sowixapi/tapu.php?tc={tc}"
-
             elif sorgu_tipi == "sulale":
                 tc = request.form.get("tc")
                 url = f"https://api.hexnox.pro/sowixapi/sulale.php?tc={tc}"
-
             elif sorgu_tipi == "okulno":
                 tc = request.form.get("tc")
                 url = f"https://api.hexnox.pro/sowixapi/okulno.php?tc={tc}"
-
             elif sorgu_tipi == "isyeriyetkili":
                 tc = request.form.get("tc")
                 url = f"https://api.hexnox.pro/sowixapi/isyeriyetkili.php?tc={tc}"
-
             elif sorgu_tipi == "isyeri":
                 tc = request.form.get("tc")
                 url = f"https://api.hexnox.pro/sowixapi/isyeri.php?tc={tc}"
-
             elif sorgu_tipi == "hane":
                 tc = request.form.get("tc")
                 url = f"https://api.hexnox.pro/sowixapi/hane.php?tc={tc}"
-
             elif sorgu_tipi == "gsmdetay":
                 gsm = request.form.get("gsm")
                 url = f"https://api.hexnox.pro/sowixapi/gsmdetay.php?gsm={gsm}"
-
             elif sorgu_tipi == "gsm":
                 gsm = request.form.get("gsm")
                 url = f"https://api.hexnox.pro/sowixapi/gsm.php?gsm={gsm}"
-
             elif sorgu_tipi == "baba":
                 tc = request.form.get("tc")
                 url = f"https://api.hexnox.pro/sowixapi/baba.php?tc={tc}"
-
             elif sorgu_tipi == "anne":
                 tc = request.form.get("tc")
                 url = f"https://api.hexnox.pro/sowixapi/anne.php?tc={tc}"
-
             elif sorgu_tipi == "aile":
                 tc = request.form.get("tc")
                 url = f"https://api.hexnox.pro/sowixapi/aile.php?tc={tc}"
-
             elif sorgu_tipi == "tcgenel":
                 tc = request.form.get("tc")
                 url = f"https://api.hexnox.pro/sowixapi/tc.php?tc={tc}"
-
             elif sorgu_tipi == "adres":
                 tc = request.form.get("tc")
                 url = f"https://api.hexnox.pro/sowixapi/adres.php?tc={tc}"
-
             else:
                 flash("Geçersiz sorgu tipi!", "error")
                 return redirect(url_for("index"))
