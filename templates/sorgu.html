@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>🔍 {{ sorgu_tipi | capitalize }} Sorgu</title>
+  <style>
+    body {
+      background-color: #000;
+      color: #0ff;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      padding: 20px;
+    }
+    a {
+      color: #0ff;
+      text-decoration: underline;
+      margin-bottom: 20px;
+      display: inline-block;
+    }
+    form {
+      margin-bottom: 30px;
+      background: linear-gradient(145deg, #111, #1a1a1a);
+      padding: 20px;
+      border-radius: 12px;
+      max-width: 450px;
+      box-shadow: 0 0 12px #0ff2;
+    }
+    input, select {
+      width: 100%;
+      margin-bottom: 15px;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      outline: none;
+      font-size: 16px;
+      background: #222;
+      color: #0ff;
+    }
+    button {
+      background-color: #0ff;
+      border: none;
+      color: #000;
+      padding: 12px;
+      width: 100%;
+      border-radius: 10px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 16px;
+      transition: all 0.3s ease;
+    }
+    button:hover {
+      background-color: #0aa;
+      color: #fff;
+    }
+    .loader {
+      display: none;
+      margin-top: 10px;
+      color: #0ff;
+      font-weight: bold;
+      animation: pulse 1.2s infinite;
+    }
+    @keyframes pulse {
+      0% { opacity: 0.2; }
+      50% { opacity: 1; }
+      100% { opacity: 0.2; }
+    }
+    .result-box {
+      background: #111;
+      padding: 20px;
+      border-radius: 12px;
+      max-width: 700px;
+      box-shadow: 0 0 15px #0ff4;
+      margin-top: 20px;
+    }
+    pre {
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+  </style>
+  <script>
+    function showLoader() {
+      document.getElementById("loader").style.display = "block";
+    }
+  </script>
+</head>
+<body>
+  <h1>👑 {{ sorgu_tipi | capitalize }} Sorgu</h1>
+  <a href="{{ url_for('index') }}">← Ana Sayfa</a>
+
+  <form method="POST" onsubmit="showLoader()">
+    {% if sorgu_tipi == 'adsoyad' %}
+      <input type="text" name="ad" placeholder="Ad" required />
+      <input type="text" name="soyad" placeholder="Soyad" required />
+    {% elif sorgu_tipi == 'adsoyadil' %}
+      <input type="text" name="ad" placeholder="Ad" required />
+      <input type="text" name="soyad" placeholder="Soyad" required />
+      <input type="text" name="il" placeholder="İl" required />
+    {% elif sorgu_tipi == 'telegram' %}
+      <input type="text" name="username" placeholder="Telegram Kullanıcı Adı" required />
+    {% elif sorgu_tipi in ['tc', 'tcgsm', 'tapu', 'sulale', 'okulno', 'isyeriyetkili', 'isyeri', 'hane', 'baba', 'anne', 'aile', 'tcgenel', 'adres'] %}
+      <input type="text" name="tc" placeholder="TC Kimlik No" required />
+    {% elif sorgu_tipi in ['gsmdetay', 'gsm'] %}
+      <input type="text" name="gsm" placeholder="GSM Numarası" required />
+    {% else %}
+      <p>🚫 Geçersiz sorgu tipi.</p>
+    {% endif %}
+    
+    {% if sorgu_tipi in [
+      'adsoyad', 'adsoyadil', 'telegram', 'tc', 'tcgsm', 'tapu', 'sulale', 'okulno',
+      'isyeriyetkili', 'isyeri', 'hane', 'gsmdetay', 'gsm', 'baba', 'anne', 'aile',
+      'tcgenel', 'adres'
+    ] %}
+      <button type="submit">🔍 Sorgula</button>
+      <div id="loader" class="loader">⏳ Lütfen bekleyin, bilgiler getiriliyor...</div>
+    {% endif %}
+  </form>
+
+  {% if sonuc %}
+    <div class="result-box">
+      <h2>📄 Sonuç:</h2>
+      <pre>{{ sonuc }}</pre>
+    </div>
+  {% endif %}
+</body>
+</html>
